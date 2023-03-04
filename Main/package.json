@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "console-table-printer": "^2.11.1",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.2.0"
+  }
+}
