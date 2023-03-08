@@ -13,8 +13,8 @@ app.use(express.json());
 const db = mysql.createConnection(
     {
         host: 'localhost',
-        user: '127.0.0.1',
-        password: null,
+        user: 'root',
+        password: '',
         database: 'employee_db',
         multipleStatements: true
     },
@@ -61,6 +61,7 @@ const viewDepartments = () => {
     //show table of department names and department ids
     db.query('SELECT * FROM department', function (err, results) {
         printTable(results);
+        menu();
 })}
 // view all roles
 const viewRoles = () => {

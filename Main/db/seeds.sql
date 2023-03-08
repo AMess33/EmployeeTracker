@@ -16,10 +16,10 @@ VALUES  (1, "Auditor", 80000),
 
 INSERT INTO employee (role_id, first_name, last_name, manager)
 VALUES  (1, "John", "Smith", "Jenny Klein"),
-        (2, "Jenny", "Klein"),
-        (3, "Alex", "Murphy"),
+        (2, "Jenny", "Klein", null),
+        (3, "Alex", "Murphy", null),
         (4, "Brent", "Long", "Alex Murphy"),
-        (5, "Sam", "Young"),
+        (5, "Sam", "Young", null),
         (6, "Evan", "Samson", "Sam Young"),
-        (7, "Ashley", "Smith"),
+        (7, "Ashley", "Smith", null),
         (8, "Katy", "Hugo", "Ashley Smith");
