@@ -13,8 +13,8 @@ app.use(express.json());
 const db = mysql.createConnection(
     {
         host: 'localhost',
-        user: 'root',
-        password: '',
+        user: '127.0.0.1',
+        password: null,
         database: 'employee_db',
         multipleStatements: true
     },
@@ -58,39 +58,44 @@ const menu = () => {
 }
 //view all departments
 const viewDepartments = () => {
-
-}
     //show table of department names and department ids
+    db.query('SELECT * FROM department', function (err, results) {
+        printTable(results);
+})}
 // view all roles
 const viewRoles = () => {
-
-}
     //show job title role id deparment and salary
+    db.query('SELECT * FROM role', function (err, results) {
+        printTable(results);
+})
+}
 // view all employees
 const viewEmployees = () => {
-
-}
     //show table of employee data, employee id, first last name,job title, department, salary, manager
+    db.query('SELECT * FROM employee', function (err, results) {
+        printTable(results);
+})
+}
 // add a department
 const addDepartment = () => {
+    //enter the name and create a new deparment in the database
 
 }
-    //enter the name and create a new deparment in the database
 // add a role
 const addRole = () => {
+    //prompted to enter name, salary, department for the role and the role is added to the database
 
 }
-    //prompted to enter name, salary, department for the role and the role is added to the database
 // add an employee
 const addEmployee = () => {
+    //prompted for first name, last name, role, manager and that employee is added to the database
 
 }
-    //prompted for first name, last name, role, manager and that employee is added to the database
 // update an employee role
 const updatedRole = () => {
-    
+        //prompted to select an employee to update and their new role and this info is updated in the database 
+
 }
-    //prompted to select an employee to update and their new role and this info is updated in the database 
 
 //Call menu function when app is ran 
 menu();
