@@ -68,6 +68,7 @@ const viewRoles = () => {
     //show job title role id deparment and salary
     db.query('SELECT * FROM role', function (err, results) {
         printTable(results);
+        menu();
 })
 }
 // view all employees
@@ -75,28 +76,84 @@ const viewEmployees = () => {
     //show table of employee data, employee id, first last name,job title, department, salary, manager
     db.query('SELECT * FROM employee', function (err, results) {
         printTable(results);
+        menu();
 })
 }
 // add a department
 const addDepartment = () => {
     //enter the name and create a new deparment in the database
-
-}
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'newDepartment',
+            message: "What is the name of the New Department?",
+        }])
+    .then((answers) => {}
+    )};
 // add a role
 const addRole = () => {
     //prompted to enter name, salary, department for the role and the role is added to the database
-
-}
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'newRole',
+            message: "What is the new Role?",
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'What is the Salary for this role?'
+        },
+        {
+            type: 'input',
+            name: 'department',
+            message: 'What Department does this Role belong to?',
+        },
+    ])
+    .then((answers) => {}
+    )};
 // add an employee
 const addEmployee = () => {
     //prompted for first name, last name, role, manager and that employee is added to the database
-
-}
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'newEmployee',
+            message: "What is the employees first name?",
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: 'What is the employees last name?',
+        },
+        {
+            type: 'input',
+            name: 'role',
+            message: 'What Role does this employee have?',
+        },
+    {
+        type: 'input',
+        name: 'manager',
+        message: 'Who is this employees manager?',
+    }])
+    .then((answers) => {}
+    )};
 // update an employee role
 const updatedRole = () => {
         //prompted to select an employee to update and their new role and this info is updated in the database 
-
-}
+        inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'newRole',
+                message: "What is their new Role?",
+            },
+          ])
+        .then((answers) => {}
+    )};
 
 //Call menu function when app is ran 
 menu();
