@@ -3,7 +3,6 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { printTable } = require('console-table-printer');
 
-const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -12,9 +11,9 @@ app.use(express.json());
 // Connect to database
 const db = mysql.createConnection(
     {
-        host: 'localhost',
+        host: '127.0.0.1',
         user: 'root',
-        password: '',
+        password: null,
         database: 'employee_db',
         multipleStatements: true
     },
@@ -29,11 +28,11 @@ const menu = () => {
                 type: 'list',
                 name: 'menu',
                 message: "What would you like to do?",
-                choices: ['View all Deparments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role']
+                choices: ['View all Departments', 'View all Roles', 'View all Employees', 'Add a Department', 'Add a Role', 'Add an Employee', 'Update an Employee Role']
             }])
         .then((answers) => {
             switch (answers.menu) {
-                case 'View All Departments':
+                case 'View all Departments':
                     viewDepartments();
                     break;
                 case 'View all Roles':
@@ -91,7 +90,7 @@ const addDepartment = () => {
                 message: "What is the name of the New Department?",
             }])
         .then((answers) => {
-            db.query(`INSERT INTO department ${answers}`, function (err, results) {
+            db.query('INSERT INTO department (name) VALUES (?)', [answers.newDepartment], function (err, results) {
                 printTable(results);
                 menu();
             })
