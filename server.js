@@ -91,10 +91,9 @@ const addDepartment = () => {
             }])
         .then((answers) => {
             db.query('INSERT INTO department (name) VALUES (?)', [answers.newDepartment], function (err, results) {
-                printTable(results);
                 menu();
             })
-         }
+        }
         )
 };
 // add a role
@@ -119,11 +118,14 @@ const addRole = () => {
             },
         ])
         .then((answers) => {
-            `INSERT INTO role (title, salary, department)
-            VALUES 
-                (${answers.newRole}, ${answers.salary}, ${answers.deparment})`
-         }
-        )
+            const departmentID = Number.parseInt(answers.department);
+            const salaryNum = Number.parseInt(answers.salary);
+
+            db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [answers.newRole, salaryNum, departmentID], function (err, results) {
+                menu();
+            }
+            )
+        })
 };
 // add an employee
 const addEmployee = () => {
@@ -150,10 +152,11 @@ const addEmployee = () => {
                 name: 'manager',
                 message: 'Who is this employees manager?',
             }])
-        .then((answers) => { 
-            `INSERT INTO employee (first name, last name, role, manager)
-            VALUES 
-                (${answers.newEmployee}, ${answers.lastName}, ${answers.role}, ${answers.manager})`
+        .then((answers) => {
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?)', [answers.newEmployee, answers.lastName, answers.manager], function (err, results) {
+                menu();
+            }
+            )
         }
         )
 };
