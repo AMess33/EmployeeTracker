@@ -1,4 +1,4 @@
-# <Employee Tracker>
+# Employee Database Tracker
 
 ## A node application that interacts with an employee Database.
 
