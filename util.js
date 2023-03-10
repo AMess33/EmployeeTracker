@@ -8,4 +8,9 @@ const toEmployeeChoice = (anyResult) => ({
     value: anyResult.id,
 })
 
-module.exports = { toRoleChoice, toEmployeeChoice }
+const toDepartmentChoice = (anyResult) => ({
+    name: anyResult.name,
+    value: anyResult.id,
+})
+
+module.exports = { toRoleChoice, toEmployeeChoice, toDepartmentChoice }

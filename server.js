@@ -2,7 +2,7 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { printTable } = require('console-table-printer');
-const { toRoleChoice, toEmployeeChoice } = require('./util.js')
+const { toRoleChoice, toEmployeeChoice, toDepartmentChoice } = require('./util.js')
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -98,6 +98,7 @@ const addDepartment = () => {
 };
 // add a role
 const addRole = () => {
+    db.query('SELECT * FROM department', function (err, departmentResults) {
     //prompted to enter name, salary, department for the role and the role is added to the database
     inquirer
         .prompt([
@@ -112,9 +113,10 @@ const addRole = () => {
                 message: 'What is the Salary for this role?'
             },
             {
-                type: 'input',
+                type: 'list',
                 name: 'department',
                 message: 'What Department does this Role belong to?',
+                choices: departmentResults.map(toDepartmentChoice),
             },
         ])
         .then((answers) => {
@@ -126,9 +128,10 @@ const addRole = () => {
             }
             )
         })
-};
+})};
 // add an employee
 const addEmployee = () => {
+    db.query('SELECT * FROM role', function (err, roleResults) {
     //prompted for first name, last name, role, manager and that employee is added to the database
     inquirer
         .prompt([
@@ -143,9 +146,10 @@ const addEmployee = () => {
                 message: 'What is the employees last name?',
             },
             {
-                type: 'input',
+                type: 'list',
                 name: 'role',
                 message: 'What Role does this employee have?',
+                choices: roleResults.map(toRoleChoice),
             },
             {
                 type: 'input',
@@ -153,15 +157,16 @@ const addEmployee = () => {
                 message: 'Who is this employees manager?',
             }])
         .then((answers) => {
+            console.log(answers);
             const roleId = Number.parseInt(answers.role);
 
-            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?)', [answers.newEmployee, answers.lastName, roleId, answers.manager], function (err, results) {
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?, ?)', [answers.newEmployee, answers.lastName, roleId, answers.manager], function (err, results) {
                 menu();
             }
             )
         }
         )
-};
+})};
 // update an employee role
 const updatedRole = () => {
     //prompted to select an employee to update and their new role and this info is updated in the database 
