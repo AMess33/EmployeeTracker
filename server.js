@@ -2,7 +2,7 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { printTable } = require('console-table-printer');
-
+const { toRoleChoice, toEmployeeChoice } = require('./util.js')
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -153,7 +153,9 @@ const addEmployee = () => {
                 message: 'Who is this employees manager?',
             }])
         .then((answers) => {
-            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?)', [answers.newEmployee, answers.lastName, answers.manager], function (err, results) {
+            const roleId = Number.parseInt(answers.role);
+
+            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?)', [answers.newEmployee, answers.lastName, roleId, answers.manager], function (err, results) {
                 menu();
             }
             )
@@ -163,16 +165,34 @@ const addEmployee = () => {
 // update an employee role
 const updatedRole = () => {
     //prompted to select an employee to update and their new role and this info is updated in the database 
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                name: 'newRole',
-                message: "What is their new Role?",
-            },
-        ])
-        .then((answers) => { }
-        )
+    db.query('SELECT * FROM role', function (err, roleResults) {
+        console.log(roleResults);
+        db.query('SELECT * FROM employee', function (err, results) {
+
+            inquirer
+                .prompt([
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: "Which employee would you like to update?",
+                        choices: results.map(toEmployeeChoice),
+                    },
+                    {
+                        type: 'list',
+                        name: 'newRole',
+                        message: "What is their new Role?",
+                        choices: roleResults.map(toRoleChoice),
+                    },
+                ])
+                .then((answers) => {
+                    console.log(answers);
+                    const newId = Number.parseInt(answers.newRole);
+
+                    // db.query(UPDATE employee WHERE id = value)
+                }
+                )
+        })
+    })
 };
 
 //Call menu function when app is ran 
