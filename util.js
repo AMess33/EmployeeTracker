@@ -13,4 +13,9 @@ const toDepartmentChoice = (anyResult) => ({
     value: anyResult.id,
 })
 
-module.exports = { toRoleChoice, toEmployeeChoice, toDepartmentChoice }
+const employeeName = (anyResult) => ({
+    name: `${anyResult.first_name} ${anyResult.last_name}`,
+    value: anyResult.first_name,
+})
+
+module.exports = { toRoleChoice, toEmployeeChoice, toDepartmentChoice, employeeName }

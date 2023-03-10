@@ -2,7 +2,7 @@ const express = require('express');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const { printTable } = require('console-table-printer');
-const { toRoleChoice, toEmployeeChoice, toDepartmentChoice } = require('./util.js')
+const { toRoleChoice, toEmployeeChoice, toDepartmentChoice, employeeName } = require('./util.js')
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -99,88 +99,87 @@ const addDepartment = () => {
 // add a role
 const addRole = () => {
     db.query('SELECT * FROM department', function (err, departmentResults) {
-    //prompted to enter name, salary, department for the role and the role is added to the database
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                name: 'newRole',
-                message: "What is the new Role?",
-            },
-            {
-                type: 'input',
-                name: 'salary',
-                message: 'What is the Salary for this role?'
-            },
-            {
-                type: 'list',
-                name: 'department',
-                message: 'What Department does this Role belong to?',
-                choices: departmentResults.map(toDepartmentChoice),
-            },
-        ])
-        .then((answers) => {
-            const departmentID = Number.parseInt(answers.department);
-            const salaryNum = Number.parseInt(answers.salary);
+        //prompted to enter name, salary, department for the role and the role is added to the database
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'newRole',
+                    message: "What is the new Role?",
+                },
+                {
+                    type: 'input',
+                    name: 'salary',
+                    message: 'What is the Salary for this role?'
+                },
+                {
+                    type: 'list',
+                    name: 'department',
+                    message: 'What Department does this Role belong to?',
+                    choices: departmentResults.map(toDepartmentChoice),
+                },
+            ])
+            .then((answers) => {
+                const departmentID = Number.parseInt(answers.department);
+                const salaryNum = Number.parseInt(answers.salary);
 
-            db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [answers.newRole, salaryNum, departmentID], function (err, results) {
-                menu();
-            }
-            )
-        })
-})};
+                db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', [answers.newRole, salaryNum, departmentID], function (err, results) {
+                    menu();
+                }
+                )
+            })
+    })
+};
 // add an employee
 const addEmployee = () => {
     db.query('SELECT * FROM role', function (err, roleResults) {
-    //prompted for first name, last name, role, manager and that employee is added to the database
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                name: 'newEmployee',
-                message: "What is the employees first name?",
-            },
-            {
-                type: 'input',
-                name: 'lastName',
-                message: 'What is the employees last name?',
-            },
-            {
-                type: 'list',
-                name: 'role',
-                message: 'What Role does this employee have?',
-                choices: roleResults.map(toRoleChoice),
-            },
-            {
-                type: 'input',
-                name: 'manager',
-                message: 'Who is this employees manager?',
-            }])
-        .then((answers) => {
-            console.log(answers);
-            const roleId = Number.parseInt(answers.role);
+        //prompted for first name, last name, role, manager and that employee is added to the database
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'newEmployee',
+                    message: "What is the employees first name?",
+                },
+                {
+                    type: 'input',
+                    name: 'lastName',
+                    message: 'What is the employees last name?',
+                },
+                {
+                    type: 'list',
+                    name: 'role',
+                    message: 'What Role does this employee have?',
+                    choices: roleResults.map(toRoleChoice),
+                },
+                {
+                    type: 'input',
+                    name: 'manager',
+                    message: 'Who is this employees manager?',
+                }])
+            .then((answers) => {
+                const roleId = Number.parseInt(answers.role);
 
-            db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?, ?)', [answers.newEmployee, answers.lastName, roleId, answers.manager], function (err, results) {
-                menu();
+                db.query('INSERT INTO employee (first_name, last_name, role_id, manager) VALUES (?, ?, ?, ?)', [answers.newEmployee, answers.lastName, roleId, answers.manager], function (err, results) {
+                    menu();
+                }
+                )
             }
             )
-        }
-        )
-})};
+    })
+};
 // update an employee role
 const updatedRole = () => {
     //prompted to select an employee to update and their new role and this info is updated in the database 
     db.query('SELECT * FROM role', function (err, roleResults) {
-        console.log(roleResults);
         db.query('SELECT * FROM employee', function (err, results) {
-
             inquirer
                 .prompt([
                     {
                         type: 'list',
                         name: 'employee',
                         message: "Which employee would you like to update?",
-                        choices: results.map(toEmployeeChoice),
+                        choices: results.map(employeeName),
                     },
                     {
                         type: 'list',
@@ -190,10 +189,11 @@ const updatedRole = () => {
                     },
                 ])
                 .then((answers) => {
-                    console.log(answers);
                     const newId = Number.parseInt(answers.newRole);
 
-                    // db.query(UPDATE employee WHERE id = value)
+                    db.query(`UPDATE employee SET role_id = ${newId} WHERE first_name = ? `, [answers.employee], function (err, results) {
+                        menu();
+                    })
                 }
                 )
         })
